@@ -551,7 +551,7 @@ export default function Index() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <Icon name="Home" className="text-primary" size={28} />
-                <span className="text-xl font-bold">АрендуюТут</span>
+                <span className="text-xl font-bold">Rently24</span>
               </div>
               <p className="text-sm text-muted-foreground">
                 Платформа для поиска и размещения объявлений об аренде жилья
@@ -581,7 +581,7 @@ export default function Index() {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 <li className="flex items-center gap-2">
                   <Icon name="Mail" size={16} />
-                  support@arenduyutut.ru
+                  support@rently24.ru
                 </li>
                 <li className="flex items-center gap-2">
                   <Icon name="Phone" size={16} />
@@ -592,7 +592,7 @@ export default function Index() {
           </div>
           
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 АрендуюТут. Все права защищены.</p>
+            <p>&copy; 2024 Rently24. Все права защищены.</p>
           </div>
         </div>
       </footer>
