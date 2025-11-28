@@ -29,7 +29,7 @@ const mockListings: Listing[] = [
     rooms: 1,
     area: 42,
     location: 'Центральный район',
-    image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&h=600&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/e3c208a9-47e6-4af1-b521-694e67859ff3.jpg',
     verified: true,
     favorite: false
   },
@@ -40,7 +40,7 @@ const mockListings: Listing[] = [
     rooms: 2,
     area: 68,
     location: 'Парковый район',
-    image: 'https://images.unsplash.com/photo-1502672260066-6bc355a03bf4?w=800&h=600&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/3988e34d-d103-4f31-a7bd-da855d2de823.jpg',
     verified: true,
     favorite: false
   },
@@ -51,7 +51,7 @@ const mockListings: Listing[] = [
     rooms: 1,
     area: 32,
     location: 'Северный район',
-    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&h=600&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/76082600-7fc7-449f-a6c6-936baf40c74c.jpg',
     verified: false,
     favorite: false
   },
@@ -62,7 +62,7 @@ const mockListings: Listing[] = [
     rooms: 3,
     area: 85,
     location: 'Южный район',
-    image: 'https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&h=600&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/e3c208a9-47e6-4af1-b521-694e67859ff3.jpg',
     verified: true,
     favorite: false
   },
@@ -73,7 +73,7 @@ const mockListings: Listing[] = [
     rooms: 2,
     area: 58,
     location: 'Западный район',
-    image: 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=800&h=600&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/3988e34d-d103-4f31-a7bd-da855d2de823.jpg',
     verified: false,
     favorite: false
   },
@@ -84,7 +84,7 @@ const mockListings: Listing[] = [
     rooms: 2,
     area: 95,
     location: 'Центральный район',
-    image: 'https://images.unsplash.com/photo-1556912173-46c336c7fd55?w=800&h=600&fit=crop',
+    image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/76082600-7fc7-449f-a6c6-936baf40c74c.jpg',
     verified: true,
     favorite: false
   }
@@ -127,7 +127,7 @@ export default function Index() {
               </Button>
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                  АрендуюТут
+                  Rently24
                 </h1>
               </div>
             </div>
@@ -352,7 +352,7 @@ export default function Index() {
             <div className="flex items-center gap-2">
               <Icon name="Home" className="text-primary" size={32} />
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                АрендуюТут
+                Rently24
               </h1>
             </div>
             <nav className="hidden md:flex items-center gap-6">
