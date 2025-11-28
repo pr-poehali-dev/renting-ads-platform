@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
@@ -8,6 +10,12 @@ import { Slider } from '@/components/ui/slider';
 import Icon from '@/components/ui/icon';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface Listing {
   id: number;
@@ -90,7 +98,49 @@ const mockListings: Listing[] = [
   }
 ];
 
+function AuthButton({ onAddListing }: { onAddListing: () => void }) {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+
+  if (!user) {
+    return (
+      <Button onClick={() => navigate('/auth')}>
+        <Icon name="LogIn" className="mr-2" />
+        Войти
+      </Button>
+    );
+  }
+
+  return (
+    <>
+      <Button onClick={onAddListing}>
+        <Icon name="Plus" className="mr-2" />
+        Разместить
+      </Button>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" size="icon">
+            <Icon name="User" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem disabled>
+            <Icon name="User" className="mr-2" size={16} />
+            {user.name}
+          </DropdownMenuItem>
+          <DropdownMenuItem onClick={logout}>
+            <Icon name="LogOut" className="mr-2" size={16} />
+            Выйти
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </>
+  );
+}
+
 export default function Index() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const [listings, setListings] = useState<Listing[]>(mockListings);
   const [searchQuery, setSearchQuery] = useState('');
   const [priceRange, setPriceRange] = useState([0, 100000]);
@@ -98,6 +148,14 @@ export default function Index() {
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
   const [activeView, setActiveView] = useState<'main' | 'listing' | 'add'>('main');
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+
+  const handleAddListing = () => {
+    if (!user) {
+      navigate('/auth');
+      return;
+    }
+    setActiveView('add');
+  };
 
   const toggleFavorite = (id: number) => {
     setListings(listings.map(listing => 
@@ -360,10 +418,7 @@ export default function Index() {
               <Button variant="ghost">Избранное</Button>
               <Button variant="ghost">Правила</Button>
               <Button variant="ghost">Контакты</Button>
-              <Button onClick={() => setActiveView('add')}>
-                <Icon name="Plus" className="mr-2" />
-                Разместить
-              </Button>
+              <AuthButton onAddListing={handleAddListing} />
             </nav>
             <Button className="md:hidden" size="icon" variant="ghost">
               <Icon name="Menu" />
