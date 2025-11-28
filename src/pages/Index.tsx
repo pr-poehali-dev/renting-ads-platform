@@ -27,6 +27,7 @@ interface Listing {
   image: string;
   verified: boolean;
   favorite: boolean;
+  rentalType: 'daily' | 'long-term';
 }
 
 const mockListings: Listing[] = [
@@ -39,7 +40,8 @@ const mockListings: Listing[] = [
     location: 'Центральный район',
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/e3c208a9-47e6-4af1-b521-694e67859ff3.jpg',
     verified: true,
-    favorite: false
+    favorite: false,
+    rentalType: 'long-term'
   },
   {
     id: 2,
@@ -50,18 +52,20 @@ const mockListings: Listing[] = [
     location: 'Парковый район',
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/3988e34d-d103-4f31-a7bd-da855d2de823.jpg',
     verified: true,
-    favorite: false
+    favorite: false,
+    rentalType: 'long-term'
   },
   {
     id: 3,
     title: 'Студия в новостройке с ремонтом',
-    price: 28000,
+    price: 2800,
     rooms: 1,
     area: 32,
     location: 'Северный район',
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/76082600-7fc7-449f-a6c6-936baf40c74c.jpg',
     verified: false,
-    favorite: false
+    favorite: false,
+    rentalType: 'daily'
   },
   {
     id: 4,
@@ -72,18 +76,20 @@ const mockListings: Listing[] = [
     location: 'Южный район',
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/e3c208a9-47e6-4af1-b521-694e67859ff3.jpg',
     verified: true,
-    favorite: false
+    favorite: false,
+    rentalType: 'long-term'
   },
   {
     id: 5,
     title: 'Квартира с евроремонтом',
-    price: 45000,
+    price: 3500,
     rooms: 2,
     area: 58,
     location: 'Западный район',
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/3988e34d-d103-4f31-a7bd-da855d2de823.jpg',
     verified: false,
-    favorite: false
+    favorite: false,
+    rentalType: 'daily'
   },
   {
     id: 6,
@@ -94,7 +100,8 @@ const mockListings: Listing[] = [
     location: 'Центральный район',
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/76082600-7fc7-449f-a6c6-936baf40c74c.jpg',
     verified: true,
-    favorite: false
+    favorite: false,
+    rentalType: 'long-term'
   }
 ];
 
@@ -146,6 +153,7 @@ export default function Index() {
   const [priceRange, setPriceRange] = useState([0, 100000]);
   const [selectedRooms, setSelectedRooms] = useState<string>('all');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
+  const [selectedRentalType, setSelectedRentalType] = useState<string>('all');
   const [activeView, setActiveView] = useState<'main' | 'listing' | 'add'>('main');
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
 
@@ -169,8 +177,9 @@ export default function Index() {
     const matchesPrice = listing.price >= priceRange[0] && listing.price <= priceRange[1];
     const matchesRooms = selectedRooms === 'all' || listing.rooms.toString() === selectedRooms;
     const matchesDistrict = selectedDistrict === 'all' || listing.location === selectedDistrict;
+    const matchesRentalType = selectedRentalType === 'all' || listing.rentalType === selectedRentalType;
     
-    return matchesSearch && matchesPrice && matchesRooms && matchesDistrict;
+    return matchesSearch && matchesPrice && matchesRooms && matchesDistrict && matchesRentalType;
   });
 
   if (activeView === 'listing' && selectedListing) {
@@ -486,6 +495,20 @@ export default function Index() {
                 </div>
 
                 <div>
+                  <Label className="text-sm mb-2 block">Тип аренды</Label>
+                  <Select value={selectedRentalType} onValueChange={setSelectedRentalType}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Все типы" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Все типы</SelectItem>
+                      <SelectItem value="daily">Посуточно</SelectItem>
+                      <SelectItem value="long-term">Длительная аренда</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
                   <Label className="text-sm mb-2 block">
                     Цена: {priceRange[0].toLocaleString()} - {priceRange[1].toLocaleString()} ₽
                   </Label>
@@ -581,6 +604,9 @@ export default function Index() {
                     <Icon name="Maximize" size={14} className="text-primary" />
                     {listing.area} м²
                   </span>
+                  <Badge variant="outline" className="text-xs">
+                    {listing.rentalType === 'daily' ? '📅 Посуточно' : '📆 Долгосрок'}
+                  </Badge>
                 </div>
                 
                 <div className="flex items-center justify-between pt-3 border-t">
@@ -588,7 +614,9 @@ export default function Index() {
                     <div className="text-2xl font-bold text-primary">
                       {listing.price.toLocaleString('ru-RU')} ₽
                     </div>
-                    <div className="text-xs text-muted-foreground">в месяц</div>
+                    <div className="text-xs text-muted-foreground">
+                      {listing.rentalType === 'daily' ? 'за сутки' : 'в месяц'}
+                    </div>
                   </div>
                   <Button size="sm">
                     Подробнее
