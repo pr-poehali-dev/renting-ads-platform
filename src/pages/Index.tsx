@@ -28,6 +28,7 @@ interface Listing {
   verified: boolean;
   favorite: boolean;
   rentalType: 'daily' | 'long-term';
+  moderationStatus: 'pending' | 'approved' | 'rejected';
 }
 
 const mockListings: Listing[] = [
@@ -41,7 +42,8 @@ const mockListings: Listing[] = [
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/e3c208a9-47e6-4af1-b521-694e67859ff3.jpg',
     verified: true,
     favorite: false,
-    rentalType: 'long-term'
+    rentalType: 'long-term',
+    moderationStatus: 'approved'
   },
   {
     id: 2,
@@ -53,7 +55,8 @@ const mockListings: Listing[] = [
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/3988e34d-d103-4f31-a7bd-da855d2de823.jpg',
     verified: true,
     favorite: false,
-    rentalType: 'long-term'
+    rentalType: 'long-term',
+    moderationStatus: 'approved'
   },
   {
     id: 3,
@@ -65,7 +68,8 @@ const mockListings: Listing[] = [
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/76082600-7fc7-449f-a6c6-936baf40c74c.jpg',
     verified: false,
     favorite: false,
-    rentalType: 'daily'
+    rentalType: 'daily',
+    moderationStatus: 'approved'
   },
   {
     id: 4,
@@ -77,7 +81,8 @@ const mockListings: Listing[] = [
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/e3c208a9-47e6-4af1-b521-694e67859ff3.jpg',
     verified: true,
     favorite: false,
-    rentalType: 'long-term'
+    rentalType: 'long-term',
+    moderationStatus: 'approved'
   },
   {
     id: 5,
@@ -89,7 +94,8 @@ const mockListings: Listing[] = [
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/3988e34d-d103-4f31-a7bd-da855d2de823.jpg',
     verified: false,
     favorite: false,
-    rentalType: 'daily'
+    rentalType: 'daily',
+    moderationStatus: 'approved'
   },
   {
     id: 6,
@@ -101,7 +107,8 @@ const mockListings: Listing[] = [
     image: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/76082600-7fc7-449f-a6c6-936baf40c74c.jpg',
     verified: true,
     favorite: false,
-    rentalType: 'long-term'
+    rentalType: 'long-term',
+    moderationStatus: 'approved'
   }
 ];
 
@@ -178,8 +185,9 @@ export default function Index() {
     const matchesRooms = selectedRooms === 'all' || listing.rooms.toString() === selectedRooms;
     const matchesDistrict = selectedDistrict === 'all' || listing.location === selectedDistrict;
     const matchesRentalType = selectedRentalType === 'all' || listing.rentalType === selectedRentalType;
+    const isApproved = listing.moderationStatus === 'approved';
     
-    return matchesSearch && matchesPrice && matchesRooms && matchesDistrict && matchesRentalType;
+    return matchesSearch && matchesPrice && matchesRooms && matchesDistrict && matchesRentalType && isApproved;
   });
 
   if (activeView === 'listing' && selectedListing) {
@@ -320,12 +328,28 @@ export default function Index() {
               <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Новое объявление
               </h1>
-              <Button>Опубликовать</Button>
+              <Button onClick={() => {
+                alert('Объявление отправлено на модерацию! После проверки оно появится в каталоге.');
+                setActiveView('main');
+              }}>Отправить на модерацию</Button>
             </div>
           </div>
         </header>
 
         <main className="container mx-auto px-4 py-8 max-w-3xl">
+          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+            <div className="flex items-start gap-3">
+              <Icon name="Info" className="text-yellow-600 mt-0.5" size={20} />
+              <div>
+                <h3 className="font-semibold text-yellow-900 mb-1">Модерация объявлений</h3>
+                <p className="text-sm text-yellow-800">
+                  Все объявления проходят проверку модератором перед публикацией. 
+                  Это занимает от нескольких минут до нескольких часов.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <Card>
             <CardContent className="p-6 space-y-6">
               <div>
