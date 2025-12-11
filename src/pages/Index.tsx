@@ -29,6 +29,28 @@ interface Listing {
   favorite: boolean;
   rentalType: 'daily' | 'long-term';
   moderationStatus: 'pending' | 'approved' | 'rejected';
+  ownerName: string;
+  ownerPhone: string;
+}
+
+interface Chat {
+  id: number;
+  listingId: number;
+  listingTitle: string;
+  listingImage: string;
+  participantName: string;
+  lastMessage: string;
+  lastMessageTime: string;
+  unreadCount: number;
+}
+
+interface Message {
+  id: number;
+  chatId: number;
+  senderId: string;
+  text: string;
+  time: string;
+  isOwn: boolean;
 }
 
 const mockListings: Listing[] = [
@@ -43,7 +65,9 @@ const mockListings: Listing[] = [
     verified: true,
     favorite: false,
     rentalType: 'long-term',
-    moderationStatus: 'approved'
+    moderationStatus: 'approved',
+    ownerName: 'Анна Петрова',
+    ownerPhone: '+7 (999) 123-45-67'
   },
   {
     id: 2,
@@ -56,7 +80,9 @@ const mockListings: Listing[] = [
     verified: true,
     favorite: false,
     rentalType: 'long-term',
-    moderationStatus: 'approved'
+    moderationStatus: 'approved',
+    ownerName: 'Игорь Смирнов',
+    ownerPhone: '+7 (999) 234-56-78'
   },
   {
     id: 3,
@@ -69,7 +95,9 @@ const mockListings: Listing[] = [
     verified: false,
     favorite: false,
     rentalType: 'daily',
-    moderationStatus: 'approved'
+    moderationStatus: 'approved',
+    ownerName: 'Елена Соколова',
+    ownerPhone: '+7 (999) 345-67-89'
   },
   {
     id: 4,
@@ -82,7 +110,9 @@ const mockListings: Listing[] = [
     verified: true,
     favorite: false,
     rentalType: 'long-term',
-    moderationStatus: 'approved'
+    moderationStatus: 'approved',
+    ownerName: 'Дмитрий Кузнецов',
+    ownerPhone: '+7 (999) 456-78-90'
   },
   {
     id: 5,
@@ -95,7 +125,9 @@ const mockListings: Listing[] = [
     verified: false,
     favorite: false,
     rentalType: 'daily',
-    moderationStatus: 'approved'
+    moderationStatus: 'approved',
+    ownerName: 'Мария Волкова',
+    ownerPhone: '+7 (999) 567-89-01'
   },
   {
     id: 6,
@@ -108,7 +140,32 @@ const mockListings: Listing[] = [
     verified: true,
     favorite: false,
     rentalType: 'long-term',
-    moderationStatus: 'approved'
+    moderationStatus: 'approved',
+    ownerName: 'Сергей Новиков',
+    ownerPhone: '+7 (999) 678-90-12'
+  }
+];
+
+const mockChats: Chat[] = [
+  {
+    id: 1,
+    listingId: 2,
+    listingTitle: 'Просторная двушка с видом на парк',
+    listingImage: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/3988e34d-d103-4f31-a7bd-da855d2de823.jpg',
+    participantName: 'Игорь Смирнов',
+    lastMessage: 'Квартира еще доступна?',
+    lastMessageTime: '14:32',
+    unreadCount: 2
+  },
+  {
+    id: 2,
+    listingId: 4,
+    listingTitle: 'Трёхкомнатная квартира для семьи',
+    listingImage: 'https://cdn.poehali.dev/projects/d13845ce-797c-4b47-b7b8-dab012dad499/files/e3c208a9-47e6-4af1-b521-694e67859ff3.jpg',
+    participantName: 'Дмитрий Кузнецов',
+    lastMessage: 'Спасибо за информацию!',
+    lastMessageTime: 'Вчера',
+    unreadCount: 0
   }
 ];
 
@@ -161,8 +218,16 @@ export default function Index() {
   const [selectedRooms, setSelectedRooms] = useState<string>('all');
   const [selectedDistrict, setSelectedDistrict] = useState<string>('all');
   const [selectedRentalType, setSelectedRentalType] = useState<string>('all');
-  const [activeView, setActiveView] = useState<'main' | 'listing' | 'add'>('main');
+  const [activeView, setActiveView] = useState<'main' | 'listing' | 'add' | 'messages' | 'chat'>('main');
   const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+  const [chats] = useState<Chat[]>(mockChats);
+  const [selectedChat, setSelectedChat] = useState<Chat | null>(null);
+  const [messages, setMessages] = useState<Message[]>([
+    { id: 1, chatId: 1, senderId: 'other', text: 'Здравствуйте! Интересует эта квартира', time: '14:20', isOwn: false },
+    { id: 2, chatId: 1, senderId: 'me', text: 'Добрый день! Да, квартира свободна', time: '14:25', isOwn: true },
+    { id: 3, chatId: 1, senderId: 'other', text: 'Квартира еще доступна?', time: '14:32', isOwn: false }
+  ]);
+  const [newMessage, setNewMessage] = useState('');
 
   const handleAddListing = () => {
     if (!user) {
@@ -189,6 +254,161 @@ export default function Index() {
     
     return matchesSearch && matchesPrice && matchesRooms && matchesDistrict && matchesRentalType && isApproved;
   });
+
+  const handleSendMessage = () => {
+    if (!newMessage.trim() || !selectedChat) return;
+    
+    const newMsg: Message = {
+      id: messages.length + 1,
+      chatId: selectedChat.id,
+      senderId: 'me',
+      text: newMessage,
+      time: new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }),
+      isOwn: true
+    };
+    
+    setMessages([...messages, newMsg]);
+    setNewMessage('');
+  };
+
+  if (activeView === 'messages') {
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="border-b bg-white sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <Button variant="ghost" onClick={() => setActiveView('main')}>
+                <Icon name="ArrowLeft" className="mr-2" />
+                Назад
+              </Button>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                Сообщения
+              </h1>
+              <div className="w-20"></div>
+            </div>
+          </div>
+        </header>
+
+        <main className="container mx-auto px-4 py-8 max-w-4xl">
+          {chats.length === 0 ? (
+            <Card className="p-12">
+              <div className="text-center">
+                <Icon name="MessageCircle" size={64} className="mx-auto text-muted-foreground mb-4" />
+                <h3 className="text-xl font-bold mb-2">Нет сообщений</h3>
+                <p className="text-muted-foreground mb-6">
+                  Начните общение с арендодателями через объявления
+                </p>
+                <Button onClick={() => setActiveView('main')}>
+                  Смотреть объявления
+                </Button>
+              </div>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              {chats.map(chat => (
+                <Card 
+                  key={chat.id}
+                  className="hover:shadow-lg transition-shadow cursor-pointer"
+                  onClick={() => {
+                    setSelectedChat(chat);
+                    setActiveView('chat');
+                  }}
+                >
+                  <CardContent className="p-4">
+                    <div className="flex gap-4">
+                      <img 
+                        src={chat.listingImage} 
+                        alt={chat.listingTitle}
+                        className="w-20 h-20 rounded-lg object-cover"
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-start justify-between mb-1">
+                          <h3 className="font-semibold truncate">{chat.participantName}</h3>
+                          <span className="text-xs text-muted-foreground whitespace-nowrap ml-2">
+                            {chat.lastMessageTime}
+                          </span>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-2 truncate">
+                          {chat.listingTitle}
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <p className="text-sm truncate">{chat.lastMessage}</p>
+                          {chat.unreadCount > 0 && (
+                            <Badge className="ml-2">{chat.unreadCount}</Badge>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </main>
+      </div>
+    );
+  }
+
+  if (activeView === 'chat' && selectedChat) {
+    const chatMessages = messages.filter(m => m.chatId === selectedChat.id);
+    
+    return (
+      <div className="min-h-screen bg-background flex flex-col">
+        <header className="border-b bg-white sticky top-0 z-50">
+          <div className="container mx-auto px-4 py-4">
+            <div className="flex items-center justify-between">
+              <Button variant="ghost" onClick={() => setActiveView('messages')}>
+                <Icon name="ArrowLeft" className="mr-2" />
+                Назад
+              </Button>
+              <div className="text-center">
+                <h2 className="font-bold">{selectedChat.participantName}</h2>
+                <p className="text-xs text-muted-foreground truncate max-w-[200px]">
+                  {selectedChat.listingTitle}
+                </p>
+              </div>
+              <div className="w-20"></div>
+            </div>
+          </div>
+        </header>
+
+        <main className="flex-1 container mx-auto px-4 py-4 max-w-4xl overflow-y-auto">
+          <div className="space-y-4">
+            {chatMessages.map(msg => (
+              <div 
+                key={msg.id}
+                className={`flex ${msg.isOwn ? 'justify-end' : 'justify-start'}`}
+              >
+                <div className={`max-w-[70%] ${msg.isOwn ? 'bg-primary text-primary-foreground' : 'bg-white'} rounded-2xl px-4 py-2 shadow`}>
+                  <p className="text-sm">{msg.text}</p>
+                  <span className={`text-xs ${msg.isOwn ? 'text-primary-foreground/70' : 'text-muted-foreground'} block text-right mt-1`}>
+                    {msg.time}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </main>
+
+        <div className="border-t bg-white sticky bottom-0">
+          <div className="container mx-auto px-4 py-4 max-w-4xl">
+            <div className="flex gap-2">
+              <Input 
+                placeholder="Напишите сообщение..."
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSendMessage()}
+                className="flex-1"
+              />
+              <Button onClick={handleSendMessage} size="icon">
+                <Icon name="Send" />
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   if (activeView === 'listing' && selectedListing) {
     return (
@@ -292,14 +512,43 @@ export default function Index() {
                     <div className="text-sm text-muted-foreground">в месяц</div>
                   </div>
 
-                  <Button className="w-full" size="lg">
+                  <Button 
+                    className="w-full" 
+                    size="lg"
+                    onClick={() => {
+                      if (!user) {
+                        navigate('/auth');
+                        return;
+                      }
+                      const existingChat = chats.find(c => c.listingId === selectedListing.id);
+                      if (existingChat) {
+                        setSelectedChat(existingChat);
+                        setActiveView('chat');
+                      } else {
+                        alert('Начат новый чат с арендодателем');
+                        setActiveView('messages');
+                      }
+                    }}
+                  >
                     <Icon name="MessageCircle" className="mr-2" />
                     Написать арендодателю
                   </Button>
 
-                  <Button variant="outline" className="w-full" size="lg">
+                  <Button 
+                    variant="outline" 
+                    className="w-full" 
+                    size="lg"
+                    onClick={() => {
+                      if (!user) {
+                        alert('Для просмотра контактов необходимо зарегистрироваться');
+                        navigate('/auth');
+                        return;
+                      }
+                      alert(`Телефон: ${selectedListing.ownerPhone}`);
+                    }}
+                  >
                     <Icon name="Phone" className="mr-2" />
-                    Показать телефон
+                    {user ? 'Показать телефон' : 'Войдите, чтобы увидеть телефон'}
                   </Button>
 
                   <div className="pt-4 border-t text-sm text-muted-foreground text-center">
@@ -447,8 +696,15 @@ export default function Index() {
               </h1>
             </div>
             <nav className="hidden md:flex items-center gap-6">
-              <Button variant="ghost">Объявления</Button>
+              <Button variant="ghost" onClick={() => setActiveView('main')}>Объявления</Button>
               <Button variant="ghost">Избранное</Button>
+              <Button variant="ghost" onClick={() => {
+                if (!user) {
+                  navigate('/auth');
+                  return;
+                }
+                setActiveView('messages');
+              }}>Сообщения</Button>
               <Button variant="ghost">Правила</Button>
               <Button variant="ghost">Контакты</Button>
               <AuthButton onAddListing={handleAddListing} />
