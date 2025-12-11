@@ -699,7 +699,7 @@ export default function Index() {
           </div>
           
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Rently24. Все права защищены.</p>
+            <p>&copy; 2025 Rently24. Все права защищены.</p>
           </div>
         </div>
       </footer>
