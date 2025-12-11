@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import Logo from '@/components/Logo';
 
 export default function Auth() {
   const [isLogin, setIsLogin] = useState(true);
@@ -53,7 +54,7 @@ export default function Auth() {
         <Card className="w-full">
           <CardHeader className="text-center">
             <div className="flex justify-center mb-4">
-              <Icon name="Home" className="text-primary" size={48} />
+              <Logo size={48} />
             </div>
             <CardTitle className="text-2xl font-bold">Rently24</CardTitle>
             <CardDescription>Платформа для аренды жилья</CardDescription>
