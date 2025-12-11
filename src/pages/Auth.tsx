@@ -39,14 +39,25 @@ export default function Auth() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-white to-primary/10 flex items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader className="text-center">
-          <div className="flex justify-center mb-4">
-            <Icon name="Home" className="text-primary" size={48} />
-          </div>
-          <CardTitle className="text-2xl font-bold">Rently24</CardTitle>
-          <CardDescription>Платформа для аренды жилья</CardDescription>
-        </CardHeader>
+      <div className="w-full max-w-md relative">
+        <Button 
+          variant="ghost" 
+          size="sm"
+          onClick={() => navigate('/')}
+          className="absolute -top-12 left-0"
+        >
+          <Icon name="ArrowLeft" className="mr-2" size={18} />
+          На главную
+        </Button>
+        
+        <Card className="w-full">
+          <CardHeader className="text-center">
+            <div className="flex justify-center mb-4">
+              <Icon name="Home" className="text-primary" size={48} />
+            </div>
+            <CardTitle className="text-2xl font-bold">Rently24</CardTitle>
+            <CardDescription>Платформа для аренды жилья</CardDescription>
+          </CardHeader>
         <CardContent>
           <Tabs value={isLogin ? 'login' : 'register'} onValueChange={(v) => setIsLogin(v === 'login')}>
             <TabsList className="grid w-full grid-cols-2">
@@ -145,7 +156,8 @@ export default function Auth() {
             </Button>
           </div>
         </CardContent>
-      </Card>
+        </Card>
+      </div>
     </div>
   );
 }
